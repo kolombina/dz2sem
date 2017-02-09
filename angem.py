@@ -2,9 +2,17 @@
 
 import math
 
+#import plotly.plotly as py
+#import plotly.graph_objs as go
+
+import plotly
+
+
+from plotly.graph_objs import Scatter, Layout
 n = 0
 a = []
 b = []
+
 
 with open("input.txt", "rt") as file1:
 
@@ -19,6 +27,7 @@ with open("input.txt", "rt") as file1:
     i = int(0)
     a = [[0] * 2 for i in range(T)]
     b = [[0] * 3 for i in range(O)]
+
 
     i = int (0)      #координаты точек
     j = int (0)
@@ -51,6 +60,23 @@ with open("input.txt", "rt") as file1:
 
 max = int(0)
 per = int(0)
+shapes = []
+
+
+def addShape(shapes, type, x0, y0, x1, y1):
+    shapes.append(
+    {
+        'type': type,
+        'x0' : x0,
+        'y0' : y0,
+        'x1' : x1,
+        'y1' : y1,
+        'line': {
+                'color': 'rgba(50, 171, 96, 0.7)' if type=='circle' else 'rgba(0, 0, 0, 1)',
+            },
+    })
+    return shapes
+
 for i in range (0, T-1):
     for j in range (i+1, T):
         per = int(0)
@@ -68,10 +94,51 @@ for i in range (0, T-1):
             y1 = int(a[i][1])
             y2 = int(a[j][1])
 
-print (max)
-print (x1, ' ', y1)
-print (x2, ' ', y2)
+#print (max)
+#print (x1, ' ', y1)
+#print (x2, ' ', y2)
 
 
 
+for i in range (0, O):
+    addShape(shapes, 'circle', (b[i][0])-(b[i][2]), (b[i][1])-(b[i][2]), (b[i][0])+(b[i][2]), (b[i][1])+(b[i][2]))
 
+addShape (shapes, 'line', x1, y1, x2, y2)
+
+"""trace0 = Scatter(
+    x=[1.5, 3.5],
+    y=[0.75, 2.5],
+    text=['Unfilled Circle',
+          'Filled Circle'],
+    mode='text',
+)
+data = [trace0]
+"""
+layout = {
+    #ось Х
+    'xaxis': {
+        #Диапазон значений оси (от, до)
+        'range': [-20, 30],
+    },
+    #Ось Y
+    'yaxis': {
+        'range': [-20, 30]
+    },
+    'width': 800,
+    'height': 800,
+    'shapes': shapes
+}
+"""
+fig = {
+    'data': data,
+    'layout': layout,
+}
+py.iplot(fig, filename='shapes-circle')
+"""
+
+
+
+plotly.offline.plot({
+    "data": [Scatter()],
+    "layout": layout,
+})
